@@ -6,14 +6,12 @@ import discord
 import openai
 
 from AiModels import AiModel
- 
+
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
 beer_number = os.getenv("BEER_NUMBER")
 admin_user = os.getenv("ADMIN_USER")
 dev_channel = os.getenv("DEV_CHANNEL")
-
-
 
 
 intents = discord.Intents.all()
@@ -39,6 +37,7 @@ def doOpenAiQuestion(AiModel, question, temperature=0.5):
 
     return f">>> {response.choices[0].text.lstrip()}"
 
+
 def generate_prompt(AiModel, question):
     return AiModel.value.format(
         question.capitalize()
@@ -48,9 +47,10 @@ def generate_prompt(AiModel, question):
 @client.event
 async def on_ready():
     print('We have logged in as {0.user}'.format(client))
-    random_string = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+    random_string = ''.join(random.choices(
+        string.ascii_lowercase + string.digits, k=random.randint(10, 50)))
     channel = client.get_channel(int(dev_channel))
-    await channel.send(doOpenAiQuestion(AiModel.GLADOS, random_string,2))
+    await channel.send(doOpenAiQuestion(AiModel.GLADOS, random_string, 2))
 
 
 @client.event
@@ -61,7 +61,7 @@ async def on_message(message):
     if message.content.startswith('hi'):
         await message.channel.send('Hello!')
     if message.content.startswith('Timmy'):
-        
+
         question = message.content.replace('Timmy', '')
         await message.channel.send("Will this message show up two times?")
         response = doOpenAiQuestion(AiModel.TIMMY, question)
@@ -69,4 +69,3 @@ async def on_message(message):
 
 
 client.run(os.getenv("DISCORD_TOKEN"))
-
