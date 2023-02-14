@@ -7,7 +7,8 @@ intents = discord.Intents.all()
 client = discord.Client(command_prefix='!', intents=intents)
 
 openai.api_key = os.getenv("OPENAI_API_KEY")
-
+beer_number = os.getenv("BEER_NUMBER")
+admin_user = os.getenv("ADMIN_USER")
 
 @client.event
 async def on_ready():
@@ -60,9 +61,9 @@ async def on_message(message):
             )
 
         except openai.APIError as error:
-            await message.channel.send(">>> There was a server issue. Please try again later. @DillDall")
+            await message.channel.send(f">>> There was a server issue. Please try again later. @{ admin_user }")
         except openai.QuotaError as error:
-            await message.channel.send(">>> The billing limit has been reached. Please try again later. @DillDall")
+            await message.channel.send(f">>> The billing limit has been reached. Please try again later. Else you can :beer: me @{ admin_user } at { beer_number }"  )
 
         await message.channel.send(f">>> {response.choices[0].text}")
 
