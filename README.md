@@ -1,4 +1,4 @@
-# open-ai-bot - Python discor app querying openai.
+# open-discord-bot - Python discor app querying openai.
 Open ai Discord bot, based on the https://beta.openai.com/docs/quickstart
 
 ## Setup
