@@ -8,8 +8,7 @@ Open ai Discord bot, based on the https://beta.openai.com/docs/quickstart
 
 2: Make a copy of the example environment variables file and input the corresponding values
 
-   ```bash
-   $ cp .env.example .env
-   ```
+```$ cp .env.example .env```
 
-3: run ``` sudo docker-compose build && sudo docker-compose --env-file .env up```
+3: Run
+```$ sudo docker-compose build && sudo docker-compose --env-file .env up```
