@@ -60,12 +60,13 @@ async def on_message(message):
 
     if message.content.startswith('hi'):
         await message.channel.send('Hello!')
-    if message.content.startswith('Timmy'):
-
+    elif message.content.startswith('Timmy'):
         question = message.content.replace('Timmy', '')
-        await message.channel.send("Will this message show up two times?")
         response = doOpenAiQuestion(AiModel.TIMMY, question)
         await message.channel.send(response)
-
+    elif message.content.startswith('Glen'):
+        question = message.content.replace('Glen', '')
+        response = doOpenAiQuestion(AiModel.GLEN, question)
+        await message.channel.send(response)
 
 client.run(os.getenv("DISCORD_TOKEN"))
