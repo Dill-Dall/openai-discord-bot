@@ -3,7 +3,7 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main
+      - testaction
 env:
   IMAGE_NAME: openai-discord-bot
   INSTANCE_IP: 13.48.30.232
