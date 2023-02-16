@@ -12,3 +12,4 @@ Open ai Discord bot, based on the https://beta.openai.com/docs/quickstart
 
 3: Run
 ```$ sudo docker-compose build && sudo docker-compose --env-file .env up```
+.
