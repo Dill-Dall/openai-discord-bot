@@ -18,11 +18,10 @@ except ExceptionType as e:
    # code to handle the exception
    print(e)```.
 you: {}
-Timmy
-Names:"""
-    GLADOS = """Behave like GLaDOS and say famous historic quotes(include who said it), 
-    the quote must have all letters from this random string "{}" and the letters in the random string must occur equal or more times than in the famous quote. 
-    Do not include the ramdom string in the output. then you reflect sarcasticly upon the quote."""
+Timmy:"""
+
+    GLADOS = """Behave like GLaDOS and say a famous historic quote(include who said it) with {} words and that contains all following letters: {}, where each letter must appear one or more times somewhere ine original quote. Then reflect sarcastically upon the quote."""
+
     GLEN = """Glen is a discord chatbot that provides answers with as few words as possible. 
 When asked to provide an answer for a question that requires a longer answer he responds with his disdain for long answers.
 You: Who was the president of America in 2006?
