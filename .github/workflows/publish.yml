@@ -9,7 +9,7 @@ env:
   IMAGE_NAME: openai-discord-bot
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-  INSTANCE_IP: 13.48.30.232
+  INSTANCE_IP: ${{ secrets.INSTANCE_IP }}
   INSTANCE_USERNAME: ubuntu
 
 jobs:
@@ -33,15 +33,3 @@ jobs:
         run: |
           docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
           docker push $DOCKERHUB_USERNAME/$IMAGE_NAME
-
-      - name: Deploy Docker image to EC2
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ env.INSTANCE_IP }}
-          username: ${{ env.INSTANCE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            docker stop openai-discord-bot || true
-            docker rm openai-discord-bot || true
-            docker pull $DOCKERHUB_USERNAME/$IMAGE_NAME
-            docker run -d --name discord-openai-bot $DOCKERHUB_USERNAME/$IMAGE_NAME
