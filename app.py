@@ -59,7 +59,7 @@ async def on_ready():
     print('We have logged in as {0.user}'.format(client))
     random_string = ''.join(random.choices(
         string.ascii_lowercase + string.digits, k=random.randint(10, 50)))
-    channel = client.get_channel(int(dev_channel))
+    channel = client.get_channel(dev_channel)
     await channel.send(doOpenAiQuestion(AiModel.GLADOS, random_string, 2))
 
 
