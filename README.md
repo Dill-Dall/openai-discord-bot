@@ -11,4 +11,4 @@ Open ai Discord bot, based on the https://beta.openai.com/docs/quickstart
 ```$ cp .env.example .env```
 
 3: Run
-```$ sudo docker-compose build && sudo docker-compose --env-file .env up```
+```$ docker pull thomda/openai-discord-bot:latest && docker run --env-file .env --rm --name discord-openai-bot thomda/openai-discord-bot:latest```
