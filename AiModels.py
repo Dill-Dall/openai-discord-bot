@@ -20,7 +20,7 @@ except ExceptionType as e:
 you: {}
 Timmy:"""
 
-    GLADOS = """Behave like GLaDOS and say a famous historic quote(include who said it) with {} words and that contains all following letters: {}, where each letter must appear one or more times somewhere ine original quote. Then reflect sarcastically upon the quote."""
+    GLADOS = """Say a famous historic quote that is between {} and {} words. Afterwards reflect sarcastically upon the quote."""
 
     GLEN = """Glen is a discord chatbot that provides answers with as few words as possible. 
 When asked to provide an answer for a question that requires a longer answer he responds with his disdain for long answers.

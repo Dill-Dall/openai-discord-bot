@@ -1,7 +1,8 @@
 from AiModels import AiModel
 import os
 import random
-import string
+import requests
+from io import BytesIO
 
 import discord
 import openai
@@ -28,7 +29,6 @@ def doOpenAiQuestion(prompt, temperature=0.5, max_tokens=150, top_p=0.3, frequen
     try:
         response = openai.Completion.create(
             model="text-davinci-003",
-            # TODO: prompt should be able to take multiple values. Perhaps prompt as a parameter?  Because propmpt  cant have multiple variables like this.
             prompt=prompt,
             temperature=temperature,
             max_tokens=max_tokens,
@@ -38,9 +38,9 @@ def doOpenAiQuestion(prompt, temperature=0.5, max_tokens=150, top_p=0.3, frequen
         )
 
     except openai.APIError as error:
+        if error.status_code == 429:
+            return f">>> The billing limit has been reached. Please try again later. Else you can :beer: me @{admin_user} at {beer_number}"
         return f">>> There was a server issue. Please try again later. @{admin_user}"
-    except openai.InvalidRequestError as error:
-        return f">>> The billing limit has been reached. Please try again later. Else you can :beer: me @{admin_user} at {beer_number}"
 
     return f">>> {response.choices[0].text.lstrip()}"
 
@@ -62,7 +62,8 @@ def weighted_random(lowest, highest, std_dev):
 
 
 def glados_prompt():
-    return generate_prompt(AiModel.GLADOS, [str(int(weighted_random(10, 100, 30))), ''.join(random.choices("ABCDEFGHIJKLMNOPQRSTUVW", k=random.randint(10, 30)))])
+    wordlength = random.randint(10, 100)
+    return generate_prompt(AiModel.GLADOS, [str(wordlength-10), str(wordlength+10)])
 
 
 @client.event
@@ -93,6 +94,19 @@ async def on_message(message):
         response = doOpenAiQuestion(prompt, temperature=0.3, max_tokens=int(weighted_random(12, 24, 6)), presence_penalty=0.2,
                                     frequency_penalty=0.3)
         await message.channel.send(response)
+
+    elif message.content.startswith('Dall'):
+        prompt = message.content.replace('Dall', '')
+        response = openai.Image.create(
+            prompt=prompt + " but as a cat",
+            n=1,
+            size="1024x1024"
+        )
+        image_url = response['data'][0]['url']
+        response = requests.get(image_url)
+        image_data = BytesIO(response.content)
+
+        await message.channel.send(file=discord.File(image_data, 'image.png'))
 
 
 client.run(os.getenv("DISCORD_TOKEN"))
