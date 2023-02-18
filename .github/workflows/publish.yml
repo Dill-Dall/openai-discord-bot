@@ -2,8 +2,6 @@ name: Publish Image
 
 on:
   push:
-    branches:
-      - main
     tags:
       - '*'
 
@@ -11,8 +9,6 @@ env:
   IMAGE_NAME: openai-discord-bot
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-  INSTANCE_IP: ${{ secrets.INSTANCE_IP }}
-  INSTANCE_USERNAME: ubuntu
 
 jobs:
   deploy:
@@ -24,8 +20,7 @@ jobs:
 
       - name: Set image tag
         id: set-tag
-        if: startsWith(github.ref, 'refs/tags/')
-        run: echo ::set-output name=TAG_NAME::${{ github.ref.replace('refs/tags/', '') }}
+        run: echo ::set-output name=TAG_NAME::${{ github.ref }}
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -39,11 +34,6 @@ jobs:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
           TAG_NAME: ${{ steps.set-tag.outputs.TAG_NAME }}
         run: |
-          if [ -z "$TAG_NAME" ]
-          then
-            docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
-            docker push $DOCKERHUB_USERNAME/$IMAGE_NAME
-          else
-            docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$TAG_NAME .
-            docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$TAG_NAME
-          fi
+          docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$TAG_NAME -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest .
+          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$TAG_NAME
+          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
