@@ -64,6 +64,7 @@ async def timmy_command(ctx, *, question):
 
 @bot.slash_command(name="glados", description="Say quotes and comments on them. #Struggling with random")
 async def glados_command(ctx):
+    await ctx.defer()
     response = do_openai_question(glados_prompt())
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
