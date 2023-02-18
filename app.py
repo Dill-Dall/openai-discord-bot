@@ -51,15 +51,15 @@ async def on_ready():
 
 @bot.slash_command(name="timmy", description="Timmy helps you, but might be dificult about it")
 async def timmy_command(ctx, *, question):
-    async with ctx.typing():
-        prompt = generate_prompt(AiModel.TIMMY, question)
-        response = do_openai_question(prompt)
+    await ctx.defer()
+    prompt = generate_prompt(AiModel.TIMMY, question)
+    response = do_openai_question(prompt)
 
-        embed = discord.Embed(color=discord.Color.blue())
-        embed.add_field(name=ctx.author.name, value=question, inline=False)
-        embed.add_field(name='Timmy', value=response)
+    embed = discord.Embed(color=discord.Color.blue())
+    embed.add_field(name=ctx.author.name, value=question, inline=False)
+    embed.add_field(name='Timmy', value=response)
 
-    await ctx.send(embed=embed)
+    await ctx.followup.send(embed=embed)
 
 
 @bot.slash_command(name="glados", description="Say quotes and comments on them. #Struggling with random")
@@ -68,11 +68,12 @@ async def glados_command(ctx):
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
 
-    await ctx.send(embed=embed)
+    await ctx.followup.send(embed=embed)
 
 
 @bot.slash_command(name="glen", description="Responds with short and concise answers")
 async def glen_command(ctx, *, question):
+    await ctx.defer()
     response = do_openai_question(
         prompt=generate_prompt(AiModel.GLEN, question),
         temperature=0.3,
@@ -83,7 +84,7 @@ async def glen_command(ctx, *, question):
     embed = discord.Embed(color=discord.Color.blue())
     embed.add_field(name=ctx.author.name, value=question, inline=False)
     embed.add_field(name='Glen', value=response)
-    await ctx.respond(embed=embed)
+    await ctx.followup.send(embed=embed)
 
 
 @bot.slash_command(name="dall", description="Uses the Dalle engine to create images by prompt")
