@@ -46,7 +46,7 @@ async def on_ready():
 
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
-    await channel.send(embed=embed)
+    await working_message.edit(embed=embed)
 
 
 @bot.slash_command(name="timmy", description="Timmy helps you, but might be dificult about it")
@@ -54,9 +54,12 @@ async def timmy_command(ctx, *, question):
     async with ctx.typing():
         prompt = generate_prompt(AiModel.TIMMY, question)
         response = do_openai_question(prompt)
-        embed = discord.Embed(
-            title='Timmy', description=response, color=discord.Color.blue())
-        await ctx.send(embed=embed)
+
+        embed = discord.Embed(color=discord.Color.blue())
+        embed.add_field(name=ctx.author.name, value=question, inline=False)
+        embed.add_field(name='Timmy', value=response)
+
+    await ctx.send(embed=embed)
 
 
 @bot.slash_command(name="glados", description="Say quotes and comments on them. #Struggling with random")
@@ -64,6 +67,7 @@ async def glados_command(ctx):
     response = do_openai_question(glados_prompt())
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
+
     await ctx.send(embed=embed)
 
 
@@ -76,8 +80,9 @@ async def glen_command(ctx, *, question):
         presence_penalty=0.2,
         frequency_penalty=0.3
     )
-    embed = discord.Embed(
-        title='Glen', description=response, color=discord.Color.blue())
+    embed = discord.Embed(color=discord.Color.blue())
+    embed.add_field(name=ctx.author.name, value=question, inline=False)
+    embed.add_field(name='Glen', value=response)
     await ctx.respond(embed=embed)
 
 
@@ -87,8 +92,9 @@ async def dall_command(ctx, *, prompt):
     response = do_openai_image_create(prompt)
     image_url = response['data'][0]['url']
 
-    embed = discord.Embed(title='Dall', description=prompt,
+    embed = discord.Embed(title='Dall',
                           color=discord.Color.blue())
+    embed.add_field(name=ctx.author.name, value=prompt)
     embed.set_image(url=image_url)
 
     await ctx.followup.send(embed=embed)
