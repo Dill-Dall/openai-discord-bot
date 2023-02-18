@@ -15,3 +15,7 @@ Install:
 
 3: Run
 ```$ docker pull thomda/openai-discord-bot:latest && docker run --env-file .env --rm --name discord-openai-bot thomda/openai-discord-bot:latest```
+
+
+App uses pycord:
+https://guide.pycord.dev
