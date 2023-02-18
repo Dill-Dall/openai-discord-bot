@@ -31,8 +31,12 @@ def weighted_random(lowest, highest, std_dev):
 
 
 def glados_prompt():
-    wordlength = random.randint(10, 100)
-    return generate_prompt(AiModel.GLADOS, [str(wordlength-10), str(wordlength+10)])
+    with open('resources/list_of_themes.txt') as f:
+        themes = f.read().splitlines()
+        theme = random.choice(themes).strip()
+        wordlength = random.randint(10, 100)
+
+    return generate_prompt(AiModel.GLADOS, [theme, str(wordlength-10), str(wordlength+10)])
 
 
 @bot.event
@@ -42,7 +46,7 @@ async def on_ready():
     channel = bot.get_channel(int(dev_channel))
 
     working_message = await channel.send(embed=embed)
-    response = do_openai_question(glados_prompt())
+    response = do_openai_question(glados_prompt(), temperature=1)
 
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
@@ -65,7 +69,7 @@ async def timmy_command(ctx, *, question):
 @bot.slash_command(name="glados", description="Say quotes and comments on them. #Struggling with random")
 async def glados_command(ctx):
     await ctx.defer()
-    response = do_openai_question(glados_prompt())
+    response = do_openai_question(glados_prompt(), temperature=1)
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
 
