@@ -30,6 +30,13 @@ jobs:
         id: build-image
         env:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          TAG_NAME: ${{ steps.set-tag.outputs.TAG_NAME }}
         run: |
-          docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
-          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME
+          if [ -z "$TAG_NAME" ]
+          then
+            docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
+            docker push $DOCKERHUB_USERNAME/$IMAGE_NAME
+          else
+            docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$TAG_NAME .
+            docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$TAG_NAME
+          fi
