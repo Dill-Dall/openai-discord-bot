@@ -21,10 +21,10 @@
 	<h2>Docker usage</h2>
 		<p>To run the app on a server:</p>
 	<pre><div class="bg-black mb-4 rounded-md"><div class="flex items-center relative text-gray-200 bg-gray-800 px-4 py-2 text-xs font-sans"><span class="">bash</span><button class="flex ml-auto gap-2"><svg stroke="currentColor" fill="none" stroke-width="2" viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round" class="h-4 w-4" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>Copy code</button></div><div class="p-4 overflow-y-auto"><code class="!whitespace-pre hljs language-bash">
-	1 - Install Docker
-	2 - $ cp .env.example .env
-	3 - Then input the require values into the .env keys
-	4 - docker run --env-file .env --rm --name discord-openai-bot thomda/openai-discord-bot:latest
+	#Install Docker
+	cp .env.example .env
+	#Then input the require values into the .env keys
+	docker run --env-file .env --rm --name discord-openai-bot thomda/openai-discord-bot:latest
 </code></div></div></pre>
 	<h2>Usage</h2>
 	<p>The <code>openai-discord-bot</code> project provides several slash commands that trigger different OpenAI models
