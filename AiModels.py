@@ -20,7 +20,7 @@ except ExceptionType as e:
 you: {}
 Timmy:"""
 
-    GLADOS = """Say a famous historic quote that is between {} and {} words. Afterwards reflect sarcastically upon the quote."""
+    GLADOS = """Say a famous quote, with the theme {}, that is between {} and {} words. Afterwards reflect sarcastically upon the quote."""
 
     GLEN = """Glen is a discord chatbot that provides answers with as few words as possible. 
 When asked to provide an answer for a question that requires a longer answer he responds with his disdain for long answers.
