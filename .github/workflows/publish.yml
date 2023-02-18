@@ -2,15 +2,13 @@ name: Publish Image
 
 on:
   push:
-    branches:
-      - main
+    tags:
+      - '*'
 
 env:
   IMAGE_NAME: openai-discord-bot
   DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
   DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
-  INSTANCE_IP: ${{ secrets.INSTANCE_IP }}
-  INSTANCE_USERNAME: ubuntu
 
 jobs:
   deploy:
@@ -19,6 +17,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+
+      - name: Set env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Login to Docker Hub
         uses: docker/login-action@v1
@@ -31,5 +32,6 @@ jobs:
         env:
           IMAGE_NAME: ${{ env.IMAGE_NAME }}
         run: |
-          docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME .
-          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME
+          docker build -t $DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION -t $DOCKERHUB_USERNAME/$IMAGE_NAME:latest .
+          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:$RELEASE_VERSION
+          docker push $DOCKERHUB_USERNAME/$IMAGE_NAME:latest
