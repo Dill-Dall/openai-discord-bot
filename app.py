@@ -11,22 +11,21 @@ from prompt_helpers import generate_prompt, get_random_theme, weighted_random
 
 logging.basicConfig(level=logging.INFO)
 
-
 dev_channel = os.getenv("DEV_CHANNEL")
 
 bot = commands.Bot(command_prefix='/')
 
 
+def generate_glados_prompt():
+    theme = get_random_theme()
+
+    wordlength = random.randint(10, 100)
+
+    return generate_prompt(AiModel.GLADOS, [theme, str(wordlength-10), str(wordlength+10)])
+
+
 @bot.event
 async def on_ready():
-
-    def generate_glados_prompt():
-        theme = get_random_theme()
-
-        wordlength = random.randint(10, 100)
-
-        return generate_prompt(AiModel.GLADOS, [theme, str(wordlength-10), str(wordlength+10)])
-
     logging.info(f"We have logged in as {bot.user}")
     embed = discord.Embed(title='Booting...', color=discord.Color.blue())
     channel = bot.get_channel(int(dev_channel))
@@ -58,7 +57,6 @@ async def glados_command(ctx):
     response = do_openai_question(generate_glados_prompt(), temperature=1)
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
-
     await ctx.followup.send(embed=embed)
 
 
