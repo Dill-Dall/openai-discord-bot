@@ -40,6 +40,7 @@ The `openai-discord-bot` project provides several slash commands that trigger di
 *   `/timmy`: Generates a response to a user's question using the TIMMY AI model.
 *   `/glen`: Generates a short and concise answer to a user's question using the GLEN AI model.
 *   `/dall`: Generates an image from the DALL-E AI model using the specified prompt.
+*   `/convo`: Generates start a thread where you can have a continous conversation with the AI.
 
 To use the bot, simply type one of these commands in a Discord channel where the bot is present, followed by any additional required parameters.
 
