@@ -12,10 +12,11 @@ To use the `openai-discord-bot` project, you will need to:
 2.  Install the required Python packages using `pip install -r requirements.txt`.
 3.  Set up the necessary environment variables in a `.env` file in the root directory of the project. The required environment variables are:
 
-*   `DISCORD_TOKEN`: Your Discord bot token. -> [discord developer](https://discordapp.com/developers/applications)
+*   `DISCORD_TOKEN`: Your Discord bot token. -> [discord developer](https://discordapp.com/developers/applications)  
+    *   the bot should have the scopes [ bot, applications.commands ] and the permissions [ administrator ]
 *   `OPENAI_API_KEY`: Your OpenAI API key. -> [openai.com/api](https://openai.com/api/)
 
-4.  Start the bot by running `python discord_bot.py`.
+1.  Start the bot by running `python discord_bot.py`.
 
 Docker usage
 ------------

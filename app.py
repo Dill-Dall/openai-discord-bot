@@ -1,52 +1,38 @@
-from AiModels import AiModel
 import os
 import random
 
 import discord
+from discord.ext import commands
 import logging
 
+from AiModels import AiModel
 from open_ai_query import do_openai_question, do_openai_image_create
+from prompt_helpers import generate_prompt, get_random_theme, weighted_random
+
+logging.basicConfig(level=logging.INFO)
+
 
 dev_channel = os.getenv("DEV_CHANNEL")
 
-bot = discord.Bot()
-
-
-def generate_prompt(ai_model, inputs):
-    if isinstance(inputs, str):
-        inputs = [inputs]
-    formatted_inputs = [input.capitalize() for input in inputs]
-    return ai_model.value.format(*formatted_inputs)
-
-
-def weighted_random(lowest, highest, std_dev):
-    mean = (lowest + highest) / 2
-    iteration = 0
-    while iteration < 1500:
-        num = random.normalvariate(mean, std_dev)
-        if lowest <= num <= highest:
-            return num
-        iteration += 1
-    return mean
-
-
-def glados_prompt():
-    with open('resources/list_of_themes.txt') as f:
-        themes = f.read().splitlines()
-        theme = random.choice(themes).strip()
-        wordlength = random.randint(10, 100)
-
-    return generate_prompt(AiModel.GLADOS, [theme, str(wordlength-10), str(wordlength+10)])
+bot = commands.Bot(command_prefix='/')
 
 
 @bot.event
 async def on_ready():
+
+    def generate_glados_prompt():
+        theme = get_random_theme()
+
+        wordlength = random.randint(10, 100)
+
+        return generate_prompt(AiModel.GLADOS, [theme, str(wordlength-10), str(wordlength+10)])
+
     logging.info(f"We have logged in as {bot.user}")
     embed = discord.Embed(title='Booting...', color=discord.Color.blue())
     channel = bot.get_channel(int(dev_channel))
 
     working_message = await channel.send(embed=embed)
-    response = do_openai_question(glados_prompt(), temperature=1)
+    response = do_openai_question(generate_glados_prompt(), temperature=1)
 
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
@@ -69,11 +55,54 @@ async def timmy_command(ctx, *, question):
 @bot.slash_command(name="glados", description="Say quotes and comments on them. #Struggling with random")
 async def glados_command(ctx):
     await ctx.defer()
-    response = do_openai_question(glados_prompt(), temperature=1)
+    response = do_openai_question(generate_glados_prompt(), temperature=1)
     embed = discord.Embed(
         title='Glados', description=response, color=discord.Color.blue())
 
     await ctx.followup.send(embed=embed)
+
+
+# Would be great if one could create multiple seperated messages but think threads must be  used
+@bot.slash_command(name="convo", description="Creates a new thread, where you can have a continous conversation")
+async def frendo_command(ctx):
+    response = await ctx.respond('Starting conversation...', allowed_mentions=discord.AllowedMentions(users=False))
+    message = await ctx.send('What can I help you with?')
+    thread = await message.create_thread(name='convo-conversation-', auto_archive_duration=10080)
+    if isinstance(response, discord.Interaction):
+        await response.delete_original_response()
+
+
+@bot.event
+async def on_message(message: discord.Message):
+    thread = message.channel
+    if isinstance(thread, discord.Thread) and thread.owner == bot.user:
+        if message.author == bot.user:
+            return
+
+        if message.content.strip().lower() == "delete":
+            await thread.delete()
+            return
+
+        await bot.process_commands(message)
+        async with message.channel.typing():
+            bigPrompt = generate_prompt(AiModel.CONVO, '') + '\n'
+            messages = await thread.history(limit=None).flatten()
+            messages.reverse()
+            for message in messages:
+                if message.author == bot.user:
+                    bigPrompt += 'AI:' + message.content.strip() + '\n'
+                else:
+                    bigPrompt += 'Human:' + message.content.strip() + '\n'
+
+            logging.info('PROMPT:\n'+bigPrompt)
+
+            await thread.send(do_openai_question(bigPrompt))
+
+            if len(messages) % 10 == 0:
+                title = do_openai_question(
+                    "Give a title for this thread:" + bigPrompt, max_tokens=20)
+                logging.info(title)
+                await thread.edit(name=title)
 
 
 @bot.slash_command(name="glen", description="Responds with short and concise answers")
