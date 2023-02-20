@@ -88,7 +88,7 @@ async def on_message(message: discord.Message):
             messages.reverse()
             for message in messages:
                 if message.author == bot.user:
-                    bigPrompt += 'AI:' + message.content.strip() + '\n'
+                    bigPrompt += message.content.strip() + '\n'
                 else:
                     bigPrompt += 'Human:' + message.content.strip() + '\n'
 
@@ -96,9 +96,9 @@ async def on_message(message: discord.Message):
 
             await thread.send(do_openai_question(bigPrompt))
 
-            if len(messages) % 10 == 0:
+            if len(messages) % 20 == 0:
                 title = do_openai_question(
-                    "Give a title for this thread:" + bigPrompt, max_tokens=20)
+                    "Give a short title for this thread:" + bigPrompt, max_tokens=20)
                 logging.info(title)
                 await thread.edit(name=title)
 
