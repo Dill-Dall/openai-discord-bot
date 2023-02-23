@@ -24,7 +24,7 @@ def do_openai_question(prompt, temperature=0.5, max_tokens=150, top_p=0.3, frequ
         )
 
     except openai.APIError as error:
-        if error.status_code == 429:
+        if error.code == 429:
             return f"The billing limit has been reached. Please try again later. Else you can :beer: me @{admin_user} at {beer_number}"
         return f"There was a server issue. Please try again later. @{admin_user}"
 
