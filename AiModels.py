@@ -50,11 +50,11 @@ Glen:
 
     CONVO = """The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. Pattern question answer.
 
-Human: Hello, who are you?
-I am an AI created by OpenAI. How can I help you today?
-Human: Whats the capital of Island?
-Reykjavik
-Human: Explain quantom physics.
-Quantum physics is a branch of physics that studies the behavior of matter and energy at the atomic and subatomic level. It is a fundamental theory that describes the behavior of particles such as electrons, protons, and photons. In quantum physics, particles can exist in multiple states at the same time, and their behavior can be described using probability. It also introduces the concept of entanglement, where particles can be linked in a way that their properties are correlated, even if they are separated by large distances. The theory has had a significant impact on fields such as computing and cryptography.
+user: Hello, who are you?
+assistant: I am an AI created by OpenAI. How can I help you today?
+user: Whats the capital of Island?
+assistant: Reykjavik
+users: Human: Explain quantom physics.
+assistant: Quantum physics is a branch of physics that studies the behavior of matter and energy at the atomic and subatomic level. It is a fundamental theory that describes the behavior of particles such as electrons, protons, and photons. In quantum physics, particles can exist in multiple states at the same time, and their behavior can be described using probability. It also introduces the concept of entanglement, where particles can be linked in a way that their properties are correlated, even if they are separated by large distances. The theory has had a significant impact on fields such as computing and cryptography.
 
 """

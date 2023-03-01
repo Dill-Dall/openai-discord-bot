@@ -1,3 +1,4 @@
+import json
 import os
 import random
 
@@ -6,7 +7,7 @@ from discord.ext import commands
 import logging
 
 from AiModels import AiModel
-from open_ai_query import do_openai_question, do_openai_image_create
+from open_ai_query import do_openai_chatgpt_question, do_openai_question, do_openai_image_create
 from prompt_helpers import generate_prompt, get_random_theme, weighted_random
 
 logging.basicConfig(level=logging.INFO)
@@ -74,7 +75,7 @@ async def frendo_command(ctx):
 async def on_message(message: discord.Message):
     thread = message.channel
     if isinstance(thread, discord.Thread) and thread.owner == bot.user:
-        if message.author == bot.user:
+        if message.author == bot.user or message.content.startswith('-c'):
             return
 
         if message.content.strip().lower() == "delete":
@@ -83,22 +84,47 @@ async def on_message(message: discord.Message):
 
         await bot.process_commands(message)
         async with message.channel.typing():
-            bigPrompt = generate_prompt(AiModel.CONVO, '') + '\n'
-            messages = await thread.history(limit=None).flatten()
-            messages.reverse()
-            for message in messages:
-                if message.author == bot.user:
-                    bigPrompt += message.content.strip() + '\n'
-                else:
-                    bigPrompt += 'Human:' + message.content.strip() + '\n'
+            messages = []
+            messages.append(
+                {'role': 'system', 'content': generate_prompt(AiModel.CONVO, '')})
+            continous_user_message = ''
 
-            logging.info('PROMPT:\n'+bigPrompt)
+            thread_messages = await thread.history(limit=100).flatten()
+            reversed_thread_messages = list(reversed(thread_messages))
+            for message in reversed_thread_messages:
+                if message.content != '':
+                    if message.author == bot.user:
+                        messages.append(
+                            {'role': 'assistant', 'content': message.content})
+                    elif message.content.startswith('-c'):
+                        continous_user_message += '\n' + message.content
+                    else:
+                        if continous_user_message != '':
+                            messages.append(
+                                {'role': 'user', 'content': continous_user_message})
+                            continous_user_message = ''
+                        else:
+                            messages.append(
+                                {'role': 'user', 'content': message.content})
 
-            await thread.send(do_openai_question(bigPrompt))
+            messages_str = json.dumps(messages, indent=4)
+            logging.info('PROMPT:\n'+messages_str)
+
+            response = do_openai_chatgpt_question(messages)
+
+            if len(response) > 2000:
+                # split the response into multiple messages
+                response_parts = [response[i:i+2000]
+                                  for i in range(0, len(response), 2000)]
+                for part in response_parts:
+                    await thread.send(part)
+            else:
+                await thread.send(response)
 
             if len(messages) % 20 == 0:
-                title = do_openai_question(
-                    "Give a short title for this thread:" + bigPrompt, max_tokens=20)
+                messages_str = json.dumps(messages, indent=4)
+                title = do_openai_chatgpt_question(
+                    "Give a short title for this thread:" + messages_str)
                 logging.info(title)
                 await thread.edit(name=title)
 

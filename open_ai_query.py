@@ -38,3 +38,10 @@ def do_openai_image_create(question):
         n=1,
         size="1024x1024"
     )
+
+
+def do_openai_chatgpt_question(messages):
+    completion = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo", messages=messages)
+
+    return completion.choices[0].message.content
